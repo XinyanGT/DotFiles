@@ -7,9 +7,13 @@
 
 ;; Package archives
 (require 'package)
-(add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
-(add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/"))
+;(add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
+(add-to-list 'package-archives 
+	     '("melpa" . "http://melpa.org/packages/") t)
 (package-initialize)
+
+;; Git
+(autoload 'magit-status "magit" nil t)
 
 ;; Auto complete
 (global-auto-complete-mode t)
@@ -19,10 +23,10 @@
 
 ;; Print
 ;; Which does NOT work!!
-(setenv "GS_LIB" "D:/gs9.14/lib/")
-(setq ps-lpr-command "D:/gs9.14/bin/gswin32c.exe")
-(setq ps-lpr-switches '("-q" "-dNOPAUSE" "-dBATCH" "-sDEVICE=mswinpr2"))
-(setq ps-printer-name t)
+;;(setenv "GS_LIB" "D:/gs9.14/lib/")
+;;(setq ps-lpr-command "D:/gs9.14/bin/gswin32c.exe")
+;;(setq ps-lpr-switches '("-q" "-dNOPAUSE" "-dBATCH" "-sDEVICE=mswinpr2"))
+;;(setq ps-printer-name t)
 
 ;; Display line number
 (global-linum-mode 1)
@@ -126,6 +130,19 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;; Latex Related
+
+;; BibTex
+(setq bibtex-align-at-equal-sign t) 
+(setq bibtex-autokey-name-case-convert (quote capitalize)) 
+(setq bibtex-autokey-name-length -3) 
+(setq bibtex-autokey-names 4) 
+(setq bibtex-autokey-additional-names "etal") 
+(setq bibtex-autokey-names-stretch 0) 
+(setq bibtex-autokey-titleword-length 0) 
+(setq bibtex-autokey-titlewords 0) 
+(setq bibtex-entry-format (quote (opts-or-alts required-fields numerical-fields page-dashes realign delimiters unify-case)))
+
+
 ;; AUC TeX
 (eval-after-load "tex-mode" '(progn
   (add-to-list 'load-path "~/.emacs.d/elisp/auctex/")
