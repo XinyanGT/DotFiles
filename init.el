@@ -19,6 +19,7 @@
 (global-auto-complete-mode t)
 (require 'auto-complete-config)
 (ac-config-default)
+(add-to-list 'ac-modes 'nxml-mode)
 (add-to-list 'ac-modes 'rst-mode)
 
 ;; Print
@@ -39,6 +40,12 @@
  ;; Auto indention
 (add-hook 'c-mode-common-hook '(lambda ()
   (local-set-key(kbd "RET") 'newline-and-indent)))
+
+(add-hook 'nxml-mode-hook '(lambda ()
+  (local-set-key (kbd "RET") 'newline-and-indent)))
+
+(add-hook 'python-mode-hook '(lambda ()
+  (local-set-key (kbd "RET") 'newline-and-indent)))
 
 ;; Backup files
 (setq vc-make-backup-files t)
@@ -183,4 +190,22 @@
     (local-set-key "'" 'vip-goto-eol)))
 
 
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;; Python
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; from python.el
+(require 'python)
+(setq
+ python-shell-interpreter "ipython"
+; python-shell-interpreter-args "--gui=wx --matplotlib=wx --colors=Linux"
+ python-shell-interpreter-args "--gui=wx --colors=Linux"
+ python-shell-prompt-regexp "In \\[[0-9]+\\]: "
+ python-shell-prompt-output-regexp "Out\\[[0-9]+\\]: "
+ python-shell-completion-setup-code
+ "from IPython.core.completerlib import module_completion"
+ python-shell-completion-module-string-code
+ "';'.join(module_completion('''%s'''))\n"
+ python-shell-completion-string-code
+ "';'.join(get_ipython().Completer.all_completions('''%s'''))\n")
 
