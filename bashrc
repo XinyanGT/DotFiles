@@ -195,7 +195,3 @@ alias lk="ll --block-size=KB"
 alias rm="rm -i"
 
 
-export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$(openrave-config --python-dir)/openravepy/_openravepy_  
-export PYTHONPATH=$PYTHONPATH:$(openrave-config --python-dir)  
-
-
