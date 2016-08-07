@@ -7,10 +7,23 @@
 
 ;; Package archives
 (require 'package)
-;(add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
+(add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
 (add-to-list 'package-archives 
 	     '("melpa" . "http://melpa.org/packages/") t)
 (package-initialize)
+
+
+; fetch the list of packages available
+(unless package-archive-contents
+  (package-refresh-contents))
+
+; install the missing packages
+(dolist (package (list 'auto-complete))
+  (unless (package-installed-p package)
+    (package-install package)))
+
+(when (memq window-system '(mac ns))
+  (exec-path-from-shell-initialize))
 
 ;; Git
 (autoload 'magit-status "magit" nil t)
@@ -208,4 +221,42 @@
  "';'.join(module_completion('''%s'''))\n"
  python-shell-completion-string-code
  "';'.join(get_ipython().Completer.all_completions('''%s'''))\n")
+
+
+;; Auto load files
+(global-auto-revert-mode t)
+
+
+;; ;; OSX stuff
+;; (defun copy-from-osx ()
+;;   (shell-command-to-string "pbpaste"))
+
+;; (defun paste-to-osx (text &optional push)
+;;   (let ((process-connection-type nil))
+;;     (let ((proc (start-process "pbcopy" "*Messages*" "pbcopy")))
+;;       (process-send-string proc text)
+;;       (process-send-eof proc))))
+
+;; (setq interprogram-cut-function 'paste-to-osx)
+;; (setq interprogram-paste-function 'copy-from-osx)
+
+;; (setq gud-pdb-command-name "python3 -m pdb")
+
+;; (defun dos2unix ()
+;;   "Replace DOS eolns CR LF with Unix eolns CR"
+;;   (interactive)
+;;     (goto-char (point-min))
+    
+;; (while (search-forward "\r" nil t) (replace-match "")))
+
+
+
+
+
+
+
+
+
+
+
 
