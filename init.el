@@ -7,10 +7,23 @@
 
 ;; Package archives
 (require 'package)
-;(add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
+(add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
 (add-to-list 'package-archives 
 	     '("melpa" . "http://melpa.org/packages/") t)
 (package-initialize)
+
+
+; fetch the list of packages available
+(unless package-archive-contents
+  (package-refresh-contents))
+
+; install the missing packages
+(dolist (package (list 'auto-complete))
+  (unless (package-installed-p package)
+    (package-install package)))
+
+(when (memq window-system '(mac ns))
+  (exec-path-from-shell-initialize))
 
 ;; Git
 (autoload 'magit-status "magit" nil t)
@@ -19,6 +32,7 @@
 (global-auto-complete-mode t)
 (require 'auto-complete-config)
 (ac-config-default)
+(add-to-list 'ac-modes 'nxml-mode)
 (add-to-list 'ac-modes 'rst-mode)
 
 ;; Print
@@ -39,6 +53,12 @@
  ;; Auto indention
 (add-hook 'c-mode-common-hook '(lambda ()
   (local-set-key(kbd "RET") 'newline-and-indent)))
+
+(add-hook 'nxml-mode-hook '(lambda ()
+  (local-set-key (kbd "RET") 'newline-and-indent)))
+
+(add-hook 'python-mode-hook '(lambda ()
+  (local-set-key (kbd "RET") 'newline-and-indent)))
 
 ;; Backup files
 (setq vc-make-backup-files t)
@@ -181,6 +201,62 @@
     (local-set-key "[" 'vip-scroll-back)
     (local-set-key ";" 'vip-beginning-of-line)
     (local-set-key "'" 'vip-goto-eol)))
+
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;; Python
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; from python.el
+(require 'python)
+(setq
+ python-shell-interpreter "ipython"
+; python-shell-interpreter-args "--gui=wx --matplotlib=wx --colors=Linux"
+ python-shell-interpreter-args "--gui=wx --colors=Linux"
+ python-shell-prompt-regexp "In \\[[0-9]+\\]: "
+ python-shell-prompt-output-regexp "Out\\[[0-9]+\\]: "
+ python-shell-completion-setup-code
+ "from IPython.core.completerlib import module_completion"
+ python-shell-completion-module-string-code
+ "';'.join(module_completion('''%s'''))\n"
+ python-shell-completion-string-code
+ "';'.join(get_ipython().Completer.all_completions('''%s'''))\n")
+
+
+;; Auto load files
+(global-auto-revert-mode t)
+
+
+;; ;; OSX stuff
+;; (defun copy-from-osx ()
+;;   (shell-command-to-string "pbpaste"))
+
+;; (defun paste-to-osx (text &optional push)
+;;   (let ((process-connection-type nil))
+;;     (let ((proc (start-process "pbcopy" "*Messages*" "pbcopy")))
+;;       (process-send-string proc text)
+;;       (process-send-eof proc))))
+
+;; (setq interprogram-cut-function 'paste-to-osx)
+;; (setq interprogram-paste-function 'copy-from-osx)
+
+;; (setq gud-pdb-command-name "python3 -m pdb")
+
+;; (defun dos2unix ()
+;;   "Replace DOS eolns CR LF with Unix eolns CR"
+;;   (interactive)
+;;     (goto-char (point-min))
+    
+;; (while (search-forward "\r" nil t) (replace-match "")))
+
+
+
+
+
+
+
+
+
 
 
 
