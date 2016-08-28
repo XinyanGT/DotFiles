@@ -2,14 +2,18 @@
 ;;;; General Settings
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;; Require common lisp
-(require 'cl)
+(add-to-list 'load-path "~/.emacs.d/elisp/")
+;; (load-file "~/.emacs.d/6.945-init.el")
 
 ;; Package archives
 (require 'package)
-(add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
-(add-to-list 'package-archives 
-	     '("melpa" . "http://melpa.org/packages/") t)
+(add-to-list 'package-archives
+  '("marmalade" . "http://marmalade-repo.org/packages/"))
+(add-to-list 'package-archives
+             '("melpa" . "http://melpa.org/packages/") t)
+(when (< emacs-major-version 24)
+  ;; For important compatibility libraries like cl-lib
+  (add-to-list 'package-archives '("gnu" . "http://elpa.gnu.org/packages/")))
 (package-initialize)
 
 
@@ -18,22 +22,25 @@
   (package-refresh-contents))
 
 ; install the missing packages
-(dolist (package (list 'auto-complete))
+(dolist (package (list 'auto-complete ))
   (unless (package-installed-p package)
     (package-install package)))
 
 (when (memq window-system '(mac ns))
   (exec-path-from-shell-initialize))
 
-;; Git
-(autoload 'magit-status "magit" nil t)
+;; auto update buffers
+(global-auto-revert-mode t)
 
-;; Auto complete
-(global-auto-complete-mode t)
-(require 'auto-complete-config)
-(ac-config-default)
-(add-to-list 'ac-modes 'nxml-mode)
-(add-to-list 'ac-modes 'rst-mode)
+
+;; ;; Git
+;; (autoload 'magit-status "magit" nil t)
+
+;; ;; Auto complete
+;; (global-auto-complete-mode t)
+;; (require 'auto-complete-config)
+;; (ac-config-default)
+;; (add-to-list 'ac-modes 'rst-mode)
 
 ;; Print
 ;; Which does NOT work!!
@@ -53,12 +60,6 @@
  ;; Auto indention
 (add-hook 'c-mode-common-hook '(lambda ()
   (local-set-key(kbd "RET") 'newline-and-indent)))
-
-(add-hook 'nxml-mode-hook '(lambda ()
-  (local-set-key (kbd "RET") 'newline-and-indent)))
-
-(add-hook 'python-mode-hook '(lambda ()
-  (local-set-key (kbd "RET") 'newline-and-indent)))
 
 ;; Backup files
 (setq vc-make-backup-files t)
@@ -88,6 +89,9 @@
 
 ;; Auto save desktop
 (desktop-save-mode 1)
+(setq desktop-restore-frames t)
+(setq desktop-restore-in-current-display t)
+(setq desktop-restore-forces-onscreen nil)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; Key Bindings ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -103,8 +107,6 @@
 (global-set-key "\C-x\C-k" 'kill-region)
 (global-set-key "\C-c\C-k" 'kill-region)
 
-;; Change to vip-mode easily
-(global-set-key "\C-xv" 'vip-mode)
 
 ;; Invoke M-x without Alt key
 (global-set-key "\C-x\C-m" 'execute-extended-command)
@@ -144,119 +146,33 @@
 ;; Alias for query replace regexp
 (defalias 'qrr 'query-replace-regexp)
 
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;; Mode Specifics
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;;; Latex Related
-
-;; BibTex
-(setq bibtex-align-at-equal-sign t) 
-(setq bibtex-autokey-name-case-convert (quote capitalize)) 
-(setq bibtex-autokey-name-length -3) 
-(setq bibtex-autokey-names 4) 
-(setq bibtex-autokey-additional-names "etal") 
-(setq bibtex-autokey-names-stretch 0) 
-(setq bibtex-autokey-titleword-length 0) 
-(setq bibtex-autokey-titlewords 0) 
-(setq bibtex-entry-format (quote (opts-or-alts required-fields numerical-fields page-dashes realign delimiters unify-case)))
-
-
-;; AUC TeX
-(eval-after-load "tex-mode" '(progn
-  (add-to-list 'load-path "~/.emacs.d/elisp/auctex/")
-  (load "auctex.el" nil t t)
-  (add-to-list 'load-path "~/.emacs.d/elisp/auctex/preview/")
-  (load "preview-latex.el" nil t t)))
-(setq Info-default-directory-list
-  (cons "~/.emacs.d/elisp/auctex/doc/" Info-default-directory-list))
-
-;; Ref Tex
-(setq reftex-plug-into-AUCTeX t)
-
-;; Use png instead of GhostScript
-(setq preview-image-type 'png)
-
-(add-hook 'LaTeX-mode-hook
-  (lambda ()
-    (setq TeX-auto-save t)
-    (setq TeX-parse-self t) 
-    (setq-default TeX-master nil)
-    (reftex-mode t)
-    (TeX-fold-mode t)))
-
-;; Generate PDF
-  (setq TeX-PDF-mode t)
-
 ;;;; Info
 ;; In most cases, this enables to see the invisible text in Info mode
 (setq Info-hide-note-references nil)
 
 
-;;;; VIP
-(add-hook 'vip-mode-hook
-  (lambda ()
-    (local-set-key "]" 'vip-scroll)
-    (local-set-key "[" 'vip-scroll-back)
-    (local-set-key ";" 'vip-beginning-of-line)
-    (local-set-key "'" 'vip-goto-eol)))
+;; Interactive Do Things
+(require 'ido)
+(ido-mode t)
 
+;;;; ediff
+(setq ediff-split-window-function 'split-window-horizontally)
 
+;; default emacs configuration directory
+(defconst yan:emacs-config-dir "~/.emacs.d/config/" "")
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;; Python
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; from python.el
-(require 'python)
-(setq
- python-shell-interpreter "ipython"
-; python-shell-interpreter-args "--gui=wx --matplotlib=wx --colors=Linux"
- python-shell-interpreter-args "--gui=wx --colors=Linux"
- python-shell-prompt-regexp "In \\[[0-9]+\\]: "
- python-shell-prompt-output-regexp "Out\\[[0-9]+\\]: "
- python-shell-completion-setup-code
- "from IPython.core.completerlib import module_completion"
- python-shell-completion-module-string-code
- "';'.join(module_completion('''%s'''))\n"
- python-shell-completion-string-code
- "';'.join(get_ipython().Completer.all_completions('''%s'''))\n")
+;; utility finction to auto-load my package configurations
+(defun yan:load-config-file (filelist)
+  (dolist (file filelist)
+    (load (expand-file-name 
+	   (concat yan:emacs-config-dir file)))
+    (message "Loaded config file:%s" file)
+    ))
 
-
-;; Auto load files
-(global-auto-revert-mode t)
-
-
-;; ;; OSX stuff
-;; (defun copy-from-osx ()
-;;   (shell-command-to-string "pbpaste"))
-
-;; (defun paste-to-osx (text &optional push)
-;;   (let ((process-connection-type nil))
-;;     (let ((proc (start-process "pbcopy" "*Messages*" "pbcopy")))
-;;       (process-send-string proc text)
-;;       (process-send-eof proc))))
-
-;; (setq interprogram-cut-function 'paste-to-osx)
-;; (setq interprogram-paste-function 'copy-from-osx)
-
-;; (setq gud-pdb-command-name "python3 -m pdb")
-
-;; (defun dos2unix ()
-;;   "Replace DOS eolns CR LF with Unix eolns CR"
-;;   (interactive)
-;;     (goto-char (point-min))
-    
-;; (while (search-forward "\r" nil t) (replace-match "")))
-
-
-
-
-
-
-
-
-
-
+;; load my configuration files
+(yan:load-config-file '("mswindows_config"
+			"programming"
+			"mit_6_945"
+			))
 
 
