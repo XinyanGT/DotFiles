@@ -1,3 +1,10 @@
+;; Shortkey to toggle auto fill mode
+(global-set-key (kbd "C-c q") 'auto-fill-mode)
+;; Don't use TABS for indentations.
+(setq-default indent-tabs-mode nil)
+;; Set the number to the number of columns to use.
+(setq-default fill-column 79)
+
 ;;;; Latex Related
 
 ;; BibTex
@@ -75,14 +82,41 @@
 
 
 ;;; Python
-; use IPython
+;; Use IPython
+;; pdb setup, note the python version
+;; (setq pdb-path '/usr/lib/python3.5/pdb.py
+;;       gud-pdb-command-name (symbol-name pdb-path))
+;; (defadvice pdb (before gud-query-cmdline activate)
+;;   "Provide a better default command line when called interactively."
+;;   (interactive
+;;    (list (gud-query-cmdline pdb-path
+;; 			    (file-name-nondirectory buffer-file-name)))))
+;; (setq python-shell-interpreter "python3")
+(require 'python)
+(setq py-force-py-shell-name-p t)
+;; (setq-default py-shell-name "ipython")
 (setq-default py-shell-name "ipython3")
 (setq-default py-which-bufname "IPython")
-; use the wx backend, for both mayavi and matplotlib
-;; (setq py-python-command-args
-;;   '("--gui=wx" "--pylab=wx" "-colors" "Linux"))
-(setq py-force-py-shell-name-p t)
 
+; switch to the interpreter after executing code
+(setq py-shell-switch-buffers-on-execute-p t)
+(setq py-switch-buffers-on-execute-p t)
+; don't split windows
+(setq py-split-windows-on-execute-p nil)
+; try to automagically figure out indentation
+(setq py-smart-indentation t)
+
+
+(defcustom py-docstring-fill-column 72 [...])
+(defcustom py-comment-fill-column 79 [...])
+(add-hook 'python-mode-hook 'turn-on-auto-fill)
+(setq py-indent-offset 4)
+(setq indent-tabs-mode nil)
+(setq python-shell-interpreter "ipython2"
+            python-shell-interpreter-args "-i")
+; use the wx backend, for both mayavi and matplotlib
+(setq py-python-command-args
+  '("--gui=wx" "--pylab=wx" "-colors" "Linux"))
 
 ; restart pdb session by R
 (defun pdb-restart ()
@@ -117,15 +151,5 @@ Restart")
   (re-search-backward regexp (line-beginning-position (- 0 n)) t))
 (require 'gud)   
 (define-key gud-mode-map "R" 'pdb-restart)
-
-; switch to the interpreter after executing code
-(setq py-shell-switch-buffers-on-execute-p t)
-(setq py-switch-buffers-on-execute-p t)
-; don't split windows
-(setq py-split-windows-on-execute-p nil)
-; try to automagically figure out indentation
-(setq py-smart-indentation t)
-
-
 
 
