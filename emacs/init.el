@@ -17,17 +17,17 @@
 (package-initialize)
 
 
-					; fetch the list of packages available
+; fetch the list of packages available
 (unless package-archive-contents
 	(package-refresh-contents))
 
-					; install the missing packages
+; install the missing packages
 (dolist (package (list 'auto-complete ))
 	(unless (package-installed-p package)
 		(package-install package)))
 
-(when (memq window-system '(mac ns))
-      (exec-path-from-shell-initialize))
+;; (when (memq window-system '(mac ns))
+;;       (exec-path-from-shell-initialize))
 
 ;; auto update buffers
 (global-auto-revert-mode t)
@@ -101,6 +101,10 @@
 ;; Move to beginning and end of buffer
 (global-set-key "\C-xt" 'beginning-of-buffer)
 (global-set-key "\C-xe" 'end-of-buffer)
+(global-set-key [?\C-\S-b] 'forward-word)
+(global-set-key (kbd "C-B") 'backward-word)
+(global-set-key (kbd "C-f") 'forward-char)
+(global-set-key (kbd "C-b") 'backward-char)
 
 ;; Backward word kill, sometimes it is more efficient 
 ;; to delete the word and retype it than using backspace
@@ -170,6 +174,10 @@
 (require 'ido)
 (ido-mode t)
 
+
+;; Font size
+(set-face-attribute 'default nil :height 140)
+
 ;; ediff
 (setq ediff-split-window-function 'split-window-horizontally)
 
@@ -185,7 +193,7 @@
 	  ))
 
 ;; load my configuration files
-(yan:load-config-file '("mswindows_config"
+(yan:load-config-file '(
 			"programming"
 			"mit_6_945"
 			))
@@ -198,13 +206,12 @@
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (matlab-mode scheme-complete scala-mode2 scala-mode powershell magit git geiser fuzzy auto-complete auctex))))
+    (markdown-mode matlab-mode scheme-complete scala-mode2 scala-mode powershell magit git geiser fuzzy auto-complete auctex))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  )
-
 
 

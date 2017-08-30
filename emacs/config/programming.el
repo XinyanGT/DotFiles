@@ -19,14 +19,16 @@
 (setq bibtex-entry-format (quote (opts-or-alts required-fields numerical-fields page-dashes realign delimiters unify-case)))
 
 
-;; AUC TeX
-(eval-after-load "tex-mode" '(progn
-  (add-to-list 'load-path "~/.emacs.d/elisp/auctex/")
-  (load "auctex.el" nil t t)
-  (add-to-list 'load-path "~/.emacs.d/elisp/auctex/preview/")
-  (load "preview-latex.el" nil t t)))
-(setq Info-default-directory-list
-  (cons "~/.emacs.d/elisp/auctex/doc/" Info-default-directory-list))
+;; ;; AUC TeX
+;; (eval-after-load "tex-mode" '(progn
+;;   (add-to-list 'load-path "~/.emacs.d/elisp/auctex/")
+;;   (load "auctex.el" nil t t)
+;;   (add-to-list 'load-path "~/.emacs.d/elisp/auctex/preview/")
+;;   (load "preview-latex.el" nil t t)))
+;; (setq Info-default-directory-list
+;;   (cons "~/.emacs.d/elisp/auctex/doc/" Info-default-directory-list))
+(load "auctex.el" nil t t)
+;; (load "preview-latex.el" nil t t)
 
 ;; Ref Tex
 (setq reftex-plug-into-AUCTeX t)
@@ -91,32 +93,35 @@
 ;;   (interactive
 ;;    (list (gud-query-cmdline pdb-path
 ;; 			    (file-name-nondirectory buffer-file-name)))))
-;; (setq python-shell-interpreter "python3")
-(require 'python)
-(setq py-force-py-shell-name-p t)
-;; (setq-default py-shell-name "ipython")
-(setq-default py-shell-name "ipython3")
-(setq-default py-which-bufname "IPython")
 
-; switch to the interpreter after executing code
-(setq py-shell-switch-buffers-on-execute-p t)
-(setq py-switch-buffers-on-execute-p t)
-; don't split windows
-(setq py-split-windows-on-execute-p nil)
+(require 'python)
+(setq python-shell-interpreter "ipython3")
+(setq python-python-command "python3")
+;; (setq py-force-py-shell-name-p t)
+;; (setq-default py-shell-name "ipython")
+;; (setq-default py-shell-name "ipython3")
+;; (setq-default py-which-bufname "IPython")
+
+;; ; switch to the interpreter after executing code
+;; (setq py-shell-switch-buffers-on-execute-p t)
+;; (setq py-switch-buffers-on-execute-p t)
+;; ; don't split windows
+;; (setq py-split-windows-on-execute-p nil)
 ; try to automagically figure out indentation
 (setq py-smart-indentation t)
 
-
 (defcustom py-docstring-fill-column 72 [...])
 (defcustom py-comment-fill-column 79 [...])
+
 (add-hook 'python-mode-hook 'turn-on-auto-fill)
 (setq py-indent-offset 4)
 (setq indent-tabs-mode nil)
-(setq python-shell-interpreter "ipython2"
-            python-shell-interpreter-args "-i")
+;; (setq python-shell-interpreter "ipython3"
+;;             python-shell-interpreter-args "-i")
 ; use the wx backend, for both mayavi and matplotlib
-(setq py-python-command-args
-  '("--gui=wx" "--pylab=wx" "-colors" "Linux"))
+;; (setq py-python-command-args
+;;   '("--gui=wx" "--pylab=wx" "-colors" "Linux"))
+
 
 ; restart pdb session by R
 (defun pdb-restart ()
@@ -146,6 +151,7 @@ Restart")
   (insert input)
   (comint-send-input)
 )
+
 (defun last-lines-match (regexp &optional n)
   (setq n (or n 3))
   (re-search-backward regexp (line-beginning-position (- 0 n)) t))
